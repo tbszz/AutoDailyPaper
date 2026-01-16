@@ -303,7 +303,91 @@ VAULT_PATH=D:\Obsidian\skills\second-brain\草稿箱
 ## 💰 成本估算
 
 - **Claude API**：~$1/月（每日 30 条总结，使用 Haiku 模型）
-- **其他服务**：完全免费（GitHub Trending、RSS、Git）
+- **其他服务**：完全免费（GitHub Trending、RSS、Git、GitHub Actions）
+
+---
+
+## ⚡ GitHub Actions 自动运行（推荐）
+
+### 配置步骤
+
+#### 1. 准备 Obsidian Vault 仓库
+
+确保你的 Obsidian vault 已经推送到 GitHub（例如：`https://github.com/tbszz/second-brain`）
+
+如果没有，按以下步骤操作：
+
+```bash
+cd "D:\Obsidian\skills\second-brain"
+git init
+git add .
+git commit -m "Initial commit"
+git branch -M main
+git remote add origin https://github.com/tbszz/second-brain.git
+git push -u origin main
+```
+
+#### 2. 配置 GitHub Secrets
+
+访问 **AI Daily News 项目**的 Settings：https://github.com/tbszz/AutoDailyPaper/settings/secrets/actions
+
+添加以下 Secrets：
+
+**必需的 Secrets：**
+
+| Secret 名称 | 值 | 说明 |
+|------------|-----|------|
+| `ANTHROPIC_API_KEY` | `sk-ant-xxxxx` | Claude API Key（从 AIGocode 获取） |
+| `ANTHROPIC_BASE_URL` | `https://api.aigocode.com` | 中转站地址（如果使用中转站） |
+
+**可选的 Secrets（如果要自动提交到 vault）：**
+
+| Secret 名称 | 值 | 说明 |
+|------------|-----|------|
+| `VAULT_REPO` | `tbszz/second-brain` | 你的 Obsidian vault 仓库名（格式：用户名/仓库名） |
+| `VAULT_TOKEN` | `ghp_xxxxxx` | GitHub Personal Access Token（需要 repo 权限） |
+
+#### 3. 生成 VAULT_TOKEN
+
+1. 访问：https://github.com/settings/tokens
+2. 点击 "Generate new token" → "Generate new token (classic)"
+3. 勾选权限：
+   - ✅ `repo`（完整仓库访问权限）
+4. 点击 "Generate token"
+5. 复制 token（只显示一次！保存到 `VAULT_TOKEN`）
+
+#### 4. 测试运行
+
+配置完成后，可以手动触发测试：
+
+1. 访问：https://github.com/tbszz/AutoDailyPaper/actions
+2. 点击 "AI Daily News Generator" workflow
+3. 点击 "Run workflow" → "Run workflow"
+4. 查看运行日志
+
+#### 5. 查看结果
+
+如果配置成功，日报会：
+- ✅ 每天北京时间 8:00 自动生成
+- ✅ 自动提交到你的 vault 仓库的 `草稿箱/` 目录
+- ✅ 在手机上同步后就能看到
+
+### 工作原理
+
+```
+GitHub Actions (每天 8:00)
+  ↓
+1. 克隆 AutoDailyPaper 代码
+2. 安装依赖
+3. 克隆你的 Obsidian vault
+4. 生成 AI 日报
+5. 保存到 vault/草稿箱/
+6. 提交并推送到 vault 仓库
+  ↓
+你的手机通过 Obsidian Git 同步
+  ↓
+查看今日 AI 日报！
+```
 
 ---
 

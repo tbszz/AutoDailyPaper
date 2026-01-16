@@ -1,0 +1,67 @@
+name: AI Daily News Generator
+
+on:
+  # 每天 UTC 0:00 运行（北京时间 8:00）
+  schedule:
+    - cron: '0 0 * * *'
+  # 支持手动触发
+  workflow_dispatch:
+
+env:
+  VAULT_REPO: ${{ secrets.VAULT_REPO }}
+  VAULT_BRANCH: main
+
+jobs:
+  generate-daily-news:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Checkout Obsidian Vault
+        if: env.VAULT_REPO != ''
+        uses: actions/checkout@v4
+        with:
+          repository: ${{ secrets.VAULT_REPO }}
+          token: ${{ secrets.VAULT_TOKEN }}
+          path: vault
+
+      - name: Generate AI Daily News
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          ANTHROPIC_BASE_URL: ${{ secrets.ANTHROPIC_BASE_URL }}
+          VAULT_PATH: ${{ env.VAULT_REPO != '' && 'vault' || '' }}
+        run: node src/index.js
+
+      - name: Commit to Vault Repository
+        if: env.VAULT_REPO != ''
+        run: |
+          cd vault
+          git config user.name "AI Daily News Bot"
+          git config user.email "noreply@github.com"
+          git add .
+          git diff --staged --quiet || git commit -m "🤖 AI Daily News - $(date '+%Y-%m-%d')"
+          git push
+
+      - name: Summary
+        run: |
+          echo "✅ AI Daily News generated successfully!"
+          echo "📅 Generated at: $(date '+%Y-%m-%d %H:%M:%S UTC')"
+          if [ -n "$VAULT_REPO" ]; then
+            echo "📦 Committed to vault: $VAULT_REPO"
+          fi
+
+      - name: Notify on failure
+        if: failure()
+        run: |
+          echo "❌ AI Daily News generation failed"
+          echo "Please check the logs above for details"
