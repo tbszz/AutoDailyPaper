@@ -1,0 +1,29 @@
+{
+  "name": "ai-daily-news",
+  "version": "1.0.0",
+  "description": "自动收集 AI 领域每日热点新闻和 GitHub 日榜项目，生成 AI 总结并发送邮件",
+  "type": "module",
+  "main": "src/index.js",
+  "scripts": {
+    "start": "node src/index.js",
+    "test": "node src/index.js"
+  },
+  "keywords": [
+    "ai",
+    "news",
+    "github",
+    "trending",
+    "daily",
+    "automation"
+  ],
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "@anthropic-ai/sdk": "^0.32.1",
+    "dotenv": "^16.4.7",
+    "github-trending-api": "^1.0.3",
+    "nodemailer": "^6.9.16",
+    "octokit": "^4.1.2",
+    "rss-parser": "^3.13.0"
+  }
+}

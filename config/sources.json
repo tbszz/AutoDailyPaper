@@ -1,0 +1,12 @@
+{
+  "rssFeeds": [
+    "https://openai.com/blog/rss.xml",
+    "https://blog.google/technology/ai/rss/",
+    "https://huggingface.co/blog/feed.xml",
+    "https://www.artificialintelligence-news.com/feed/",
+    "https://www.theverge.com/ai-artificial-intelligence/rss/index.xml",
+    "https://techcrunch.com/category/artificial-intelligence/feed/",
+    "https://www.wired.com/feed/category/ai/feed",
+    "https://www.technologyreview.com/feed/"
+  ]
+}
